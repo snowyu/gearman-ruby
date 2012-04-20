@@ -55,7 +55,7 @@ class Client
   # @return  "host:port"
   def get_job_server
 
-    raise Exception.new('No servers available') if @job_servers.empty?
+    raise 'No servers available' if @job_servers.empty?
 
     @server_counter += 1
     # Return a specific server if one's been set.
@@ -91,7 +91,7 @@ class Client
     end
 
     signal_bad_server(hostport)
-    raise RuntimeError, "Unable to connect to job server #{hostport}"
+    raise "Unable to connect to job server #{hostport}"
   end
 
   ##

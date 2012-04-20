@@ -81,7 +81,7 @@ class Util
   # @return           packet (as a string)
   def Util.pack_request(type_name, arg='')
     type_num = NUMS[type_name.to_sym]
-    raise InvalidArgsError, "Invalid type name '#{type_name}'" unless type_num
+    raise ArgumentError, "Invalid type name '#{type_name}'" unless type_num
     arg = '' if not arg
     "\0REQ" + [type_num, arg.size].pack('NN') + arg
   end
@@ -98,7 +98,7 @@ class Util
     elsif args.size <= 3
       return Task.new(*args)
     else
-      raise InvalidArgsError, 'Incorrect number of args to get_task_from_args'
+      raise ArgumentError, 'Incorrect number of args to get_task_from_args'
     end
   end
 
@@ -190,7 +190,7 @@ class Util
   def self.with_safe_socket_op
     begin
       yield
-    rescue Exception => ex
+    rescue => ex
       raise ServerDownException.new(ex.message)
     end
   end

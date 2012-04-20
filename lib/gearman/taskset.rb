@@ -92,7 +92,7 @@ class TaskSet
   def handle_job_created(hostport, data)
     Util.logger.debug "GearmanRuby: Got job_created with handle #{data} from #{hostport}"
     if not @task_waiting_for_handle
-      raise ProtocolError, "Got unexpected job_created notification " + "with handle #{data} from #{hostport}"
+      raise ProtocolError, "Got unexpected job_created notification with handle #{data} from #{hostport}"
     end
     js_handle = Util.handle_to_str(hostport, data)
     task = @task_waiting_for_handle
@@ -201,8 +201,7 @@ class TaskSet
   def read_packet(sock, timeout=nil)
     hostport = @client.get_hostport_for_socket(sock)
     if not hostport
-      raise RuntimeError, "Client doesn't know host/port for socket " +
-        sock.inspect
+      raise "Client doesn't know host/port for socket #{sock.inspect}"
     end
     type, data = Util.read_response(sock, timeout)
     known_types = [ :job_created,

@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-#
 # = Name
 # Gearman
 #
@@ -10,10 +8,10 @@
 # "Gearman is a system to farm out work to other machines, dispatching
 # function calls to machines that are better suited to do work, to do work
 # in parallel, to load balance lots of function calls, or to call functions
-# between languages."  -- http://www.danga.com/gearman/
+# between languages."  -- http://gearman.org
 #
 # == Version
-# 0.0.1
+# 3.1.0
 #
 # == Author
 # Daniel Erat <dan-ruby@erat.org>
@@ -34,8 +32,7 @@
 #  require 'gearman'
 #
 #  # Create a new client and tell it about two job servers.
-#  c = Gearman::Client.new
-#  c.job_servers = ['127.0.0.1:7003', '127.0.0.1:7004']
+#  c = Gearman::Client.new(['127.0.0.1:7003', '127.0.0.1:7004'])
 #
 #  # Create two tasks, using an "add" function to sum two numbers.
 #  t1 = Gearman::Task.new('add', '5 + 2')
@@ -56,7 +53,6 @@
 #  c = Gearman::Client.new('127.0.0.1')
 #  puts c.do_task('add', '2 + 2')
 #
-module Gearman
 
 require File.dirname(__FILE__) + '/gearman/client'
 require File.dirname(__FILE__) + '/gearman/task'
@@ -64,13 +60,15 @@ require File.dirname(__FILE__) + '/gearman/taskset'
 require File.dirname(__FILE__) + '/gearman/util'
 require File.dirname(__FILE__) + '/gearman/worker'
 
-class InvalidArgsError < Exception
-end
+module Gearman
 
-class ProtocolError < Exception
-end
+  class ArgumentError < ::ArgumentError
+  end
 
-class NetworkError < Exception
-end
+  class ProtocolError < StandardError
+  end
+
+  class NetworkError < StandardError
+  end
 
 end

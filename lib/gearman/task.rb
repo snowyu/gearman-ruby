@@ -26,7 +26,8 @@ module Gearman
         opts.delete k
       end
       if opts.size > 0
-        raise InvalidArgsError, 'Invalid task args: ' + opts.keys.sort.join(', ')
+        unknown_arguments = opts.keys.sort.join(', ')
+        raise ArgumentError, "Invalid task args: #{unknown_arguments}"
       end
       @retry_count ||= 0
       @successful = false

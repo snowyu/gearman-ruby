@@ -35,7 +35,7 @@ class Server
         return @socket = sock
       end
     end
-    raise RuntimeError, "Unable to connect to job server #{hostport}"
+    raise "Unable to connect to job server #{hostport}"
   end
 
   ##

@@ -117,9 +117,9 @@ class Worker
       instance_variable_set "@#{k}", opts[k]
       opts.delete k
     end
-    if opts.size > 0
-      raise InvalidArgsError,
-        'Invalid worker args: ' + opts.keys.sort.join(', ')
+    if opts.size == 0
+      unknown_arguments = opts.keys.sort.join(', ')
+      raise ArgumentError, "Invalid worker args: #{unknown_arguments}"
     end
     @reconnect_sec = 30 if not @reconnect_sec
     @network_timeout_sec = 5 if not @network_timeout_sec
