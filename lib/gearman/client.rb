@@ -20,6 +20,7 @@ class Client
     @socket_to_hostport = {}  # sock -> "host:port"
     @test_hostport = nil  # make get_job_server return a given host for testing
     @task_create_timeout_sec = 10
+    @connection_timeout = 1 #second
     @server_counter = -1
     @bad_servers = []
   end
@@ -71,7 +72,7 @@ class Client
   #
   # @param hostport  job server "host:port"
   # @return          a Socket
-  def get_socket(hostport, num_retries=3)
+  def get_socket(hostport, num_retries=1)
     # If we already have an open socket to this host, return it.
     if @sockets[hostport]
       sock = @sockets[hostport].shift
@@ -82,7 +83,13 @@ class Client
     num_retries.times do |i|
       begin
         sock = TCPSocket.new(*hostport.split(':'))
+        secs = Integer(@connection_timeout)
+        usecs = Integer((@connection_timeout - secs) * 1_000_000)
+        optval = [secs, usecs].pack("l_2")
+        sock.setsockopt Socket::SOL_SOCKET, Socket::SO_RCVTIMEO, optval
+        sock.setsockopt Socket::SOL_SOCKET, Socket::SO_SNDTIMEO, optval
       rescue Exception
+        break
       else
 
         @socket_to_hostport[sock] = hostport
