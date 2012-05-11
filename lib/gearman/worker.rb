@@ -117,7 +117,7 @@ class Worker
       instance_variable_set "@#{k}", opts[k]
       opts.delete k
     end
-    if opts.size == 0
+    if opts.size > 0
       unknown_arguments = opts.keys.sort.join(', ')
       raise ArgumentError, "Invalid worker args: #{unknown_arguments}"
     end
