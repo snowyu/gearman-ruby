@@ -96,7 +96,7 @@ class Client
       end
     end
 
-    signal_bad_server(hostport)
+    #signal_bad_server(hostport)
     raise "Unable to connect to job server #{hostport}"
   end
 
