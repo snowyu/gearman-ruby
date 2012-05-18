@@ -51,8 +51,10 @@ class TaskSet
     looking_for_socket = true
 
     should_try_rehash = true
-    while(looking_for_socket)
+    try_server_count = 0
+    while(looking_for_socket and try_server_count <= @client.job_servers.size + 2 )
       begin
+        try_server_count += 1
         hostport = if should_try_rehash
           (@merge_hash_to_hostport[merge_hash] or @client.get_job_server)
         else
@@ -62,9 +64,14 @@ class TaskSet
         @merge_hash_to_hostport[merge_hash] = hostport if merge_hash
         sock = (@sockets[hostport] or @client.get_socket(hostport))
         looking_for_socket = false
-      rescue RuntimeError
+      rescue RuntimeError => error
         should_try_rehash = false
+        break
       end
+    end
+    if looking_for_socket
+      Util.logger.error "GearmanRuby: Can not connect any gearman server."
+      return
     end
     Util.logger.debug "GearmanRuby: Using socket #{sock.inspect} for #{hostport}"
     Util.send_request(sock, req)

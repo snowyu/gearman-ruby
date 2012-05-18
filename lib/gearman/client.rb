@@ -72,7 +72,7 @@ class Client
   #
   # @param hostport  job server "host:port"
   # @return          a Socket
-  def get_socket(hostport, num_retries=1)
+  def get_socket(hostport, num_retries=3)
     # If we already have an open socket to this host, return it.
     if @sockets[hostport]
       sock = @sockets[hostport].shift
@@ -88,11 +88,9 @@ class Client
         optval = [secs, usecs].pack("l_2")
         sock.setsockopt Socket::SOL_SOCKET, Socket::SO_RCVTIMEO, optval
         sock.setsockopt Socket::SOL_SOCKET, Socket::SO_SNDTIMEO, optval
-      rescue Exception
-        signal_bad_server(hostport)
-        raise "Unable to connect to job server #{hostport}"
+      rescue Exception => error
+        Util.logger.error "GearmanRuby: #{error} for #{hostport}"
       else
-
         @socket_to_hostport[sock] = hostport
         return sock
       end
