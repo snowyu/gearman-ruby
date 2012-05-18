@@ -89,7 +89,8 @@ class Client
         sock.setsockopt Socket::SOL_SOCKET, Socket::SO_RCVTIMEO, optval
         sock.setsockopt Socket::SOL_SOCKET, Socket::SO_SNDTIMEO, optval
       rescue Exception
-        break
+        signal_bad_server(hostport)
+        raise "Unable to connect to job server #{hostport}"
       else
 
         @socket_to_hostport[sock] = hostport
